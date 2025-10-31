@@ -1,0 +1,335 @@
+:root {
+  --bg: #f3f1ec;
+  --white: #ffffff;
+  --gold: #c8a97e;
+  --dark: #323232;
+  --accent: rgba(200, 169, 126, 0.12);
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  --radius-card: 24px;
+  --max-width: 480px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #fff 0%, #f3f1ec 60%);
+  transition: opacity 0.5s ease;
+}
+
+.screen--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.screen--active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Envelope screen */
+.envelope-wrapper {
+  text-align: center;
+}
+
+.envelope {
+  position: relative;
+  width: min(320px, 80vw);
+  height: 200px;
+  margin: 0 auto;
+  background: transparent;
+  perspective: 1000px;
+}
+
+.envelope-body {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow);
+  border-radius: 8px;
+}
+
+.envelope-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: #fff;
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  transform-origin: top;
+  transition: transform 0.7s ease;
+  z-index: 3;
+}
+
+.seal-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -30%);
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: none;
+  background: radial-gradient(circle, #c8a97e 0%, #a87d48 100%);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 24px;
+}
+
+.seal-btn:active {
+  transform: translate(-50%, -30%) scale(0.97);
+}
+
+.envelope.open .envelope-top {
+  transform: rotateX(160deg);
+}
+
+.envelope-text {
+  margin-top: 1.2rem;
+  color: #6a6a6a;
+  font-size: 0.95rem;
+}
+
+/* Invitation screen */
+#screen-invite {
+  padding: 1.5rem;
+}
+
+.invite-card {
+  position: relative;
+  width: min(480px, 100%);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+  padding: 2.5rem 1.5rem 5.5rem;
+  overflow: hidden;
+}
+
+.invite-flower-bg {
+  position: absolute;
+  inset: -30% -10%;
+  background: radial-gradient(circle at top, rgba(200, 169, 126, 0.11), transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.invite-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 1.4rem;
+}
+
+.invite-initials {
+  font-family: "Tangerine", cursive;
+  font-size: 3.6rem;
+  color: #a47a4a;
+  letter-spacing: 0.15em;
+}
+
+.invite-names {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.invite-name-main {
+  font-family: "Playfair Display", serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #3b3b3b;
+}
+
+.invite-name-surnames {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #8a7b6a;
+  margin-top: 0.35rem;
+}
+
+.invite-details {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.invite-date {
+  font-weight: 500;
+  color: #5a4a35;
+  margin-bottom: 0.25rem;
+}
+
+.invite-venue {
+  font-weight: 400;
+  color: #8a7b6a;
+  margin-bottom: 0.75rem;
+}
+
+.invite-text {
+  font-style: italic;
+  color: #6e6e6e;
+}
+
+/* Actions */
+.invite-actions {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.75rem;
+  width: min(480px, 100%);
+  justify-content: center;
+}
+
+.action-btn {
+  background: #fff;
+  border: 1px solid rgba(168, 125, 72, 0.25);
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 100px;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.09);
+}
+
+.action-btn--primary {
+  background: #a47a4a;
+  color: #fff;
+  border: 1px solid rgba(109, 79, 46, 0.25);
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+}
+
+.modal.is-open {
+  display: block;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(420px, 92vw);
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.6rem 1.25rem 1.25rem;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  margin-bottom: 0.4rem;
+  text-align: center;
+}
+
+.modal-sub {
+  margin: 0 0 1.3rem;
+  text-align: center;
+  color: #6e6e6e;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.form-field input,
+.form-field select {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.9rem;
+}
+
+.submit-btn {
+  border: none;
+  background: #a47a4a;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.6rem;
+}
+
+.form-msg {
+  font-size: 0.8rem;
+  color: #4b7a37;
+  margin-top: 0.5rem;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .invite-card {
+    padding: 3rem 3rem 6rem;
+  }
+
+  .invite-initials {
+    font-size: 4.2rem;
+  }
+
+  .invite-actions {
+    bottom: 2rem;
+  }
+}
