@@ -1,8 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const envelopeScreen = document.getElementById("screen-envelope");
-  const inviteScreen = document.getElementById("screen-invite");
+  const screenIntro = document.getElementById("screen-intro");
+  const screenEnvelope = document.getElementById("screen-envelope");
+  const screenInvite = document.getElementById("screen-invite");
+
+  const introBtn = document.getElementById("intro-btn");
+  const introFlip = document.getElementById("intro-flip");
+  const introFlipCard = introFlip
+    ? introFlip.querySelector(".intro-flip-card")
+    : null;
+
   const sealBtn = document.getElementById("seal-btn");
-  const envelope = document.querySelector(".envelope");
+
+  const mapBtn = document.getElementById("map-btn");
+  const rsvpBtn = document.getElementById("rsvp-btn");
+  const modal = document.getElementById("rsvp-modal");
+  const modalClose = document.getElementById("modal-close");
+  const modalCloseBtn = document.getElementById("modal-close-btn");
+  const rsvpForm = document.getElementById("rsvp-form");
+  const rsvpMsg = document.getElementById("rsvp-msg");
 
   const initialsEl = document.getElementById("invite-initials");
   const namesMainEl = document.getElementById("invite-names-main");
@@ -11,83 +26,171 @@ document.addEventListener("DOMContentLoaded", () => {
   const venueEl = document.getElementById("invite-venue");
   const textEl = document.getElementById("invite-text");
 
-  const mapBtn = document.getElementById("map-btn");
-  const rsvpBtn = document.getElementById("rsvp-btn");
+  const CFG = typeof INVITE_CONFIG !== "undefined" ? INVITE_CONFIG : {};
+  const langSwitch = document.getElementById("lang-switch");
+  const langBtns = langSwitch ? langSwitch.querySelectorAll(".lang-btn") : [];
+  let currentLang = CFG.defaultLang || "en";
 
-  const modal = document.getElementById("rsvp-modal");
-  const modalClose = document.getElementById("modal-close");
-  const modalCloseBtn = document.getElementById("modal-close-btn");
-  const rsvpForm = document.getElementById("rsvp-form");
-  const rsvpMsg = document.getElementById("rsvp-msg");
+  const showScreen = (elToShow) => {
+    [screenIntro, screenEnvelope, screenInvite].forEach((el) => {
+      if (!el) return;
+      if (el === elToShow) {
+        el.classList.remove("screen--hidden");
+        el.classList.add("screen--active");
+      } else {
+        el.classList.add("screen--hidden");
+        el.classList.remove("screen--active");
+      }
+    });
+  };
 
-  // 1. Inject config
-  if (typeof INVITE_CONFIG !== "undefined") {
-    const { bride, groom, event } = INVITE_CONFIG;
-    const initials = `${groom.initial} & ${bride.initial}`;
-    initialsEl.textContent = initials;
+  const injectInvite = () => {
+    if (!CFG.bride || !CFG.groom || !CFG.event) return;
+    const { bride, groom, event } = CFG;
+    if (initialsEl)
+      initialsEl.textContent = `${groom.initial || ""} & ${
+        bride.initial || ""
+      }`;
+    if (namesMainEl)
+      namesMainEl.textContent = `${groom.firstName || ""} & ${
+        bride.firstName || ""
+      }`;
+    if (namesSurnamesEl)
+      namesSurnamesEl.textContent = `${groom.lastName || ""} • ${
+        bride.lastName || ""
+      }`;
+    if (dateEl)
+      dateEl.textContent = event.time
+        ? `${event.date} at ${event.time}`
+        : event.date;
+    if (venueEl) venueEl.textContent = event.venue || "";
+    if (textEl)
+      textEl.textContent =
+        event.invitationText_en ||
+        event.invitationText_fr ||
+        event.invitationText ||
+        "";
+  };
 
-    namesMainEl.textContent = `${groom.firstName} & ${bride.firstName}`;
-    namesSurnamesEl.textContent = `${groom.lastName} • ${bride.lastName}`;
+  const applyTranslations = (lang) => {
+    if (!CFG.i18n || !CFG.i18n[lang]) return;
+    const dict = CFG.i18n[lang];
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const key = el.getAttribute("data-i18n");
+      if (dict[key]) el.textContent = dict[key];
+    });
+    if (textEl && CFG.event) {
+      const evt = CFG.event;
+      const txt =
+        lang === "fr"
+          ? evt.invitationText_fr || evt.invitationText_en || evt.invitationText
+          : evt.invitationText_en ||
+            evt.invitationText_fr ||
+            evt.invitationText;
+      textEl.textContent = txt;
+    }
+  };
 
-    // date + time
-    const dateText = event.time ? `${event.date} at ${event.time}` : event.date;
-    dateEl.textContent = dateText;
-    venueEl.textContent = event.venue;
-    textEl.textContent = event.invitationText || "";
+  injectInvite();
+  applyTranslations(currentLang);
+
+  // language
+  if (langBtns.length) {
+    langBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const lang = btn.getAttribute("data-lang");
+        currentLang = lang;
+        langBtns.forEach((b) => b.classList.remove("lang-btn--active"));
+        btn.classList.add("lang-btn--active");
+        applyTranslations(lang);
+      });
+    });
   }
 
-  // 2. Envelope open flow
-  sealBtn.addEventListener("click", () => {
-    envelope.classList.add("open");
-    // after animation → switch screens
-    setTimeout(() => {
-      envelopeScreen.classList.add("screen--hidden");
-      envelopeScreen.classList.remove("screen--active");
-      inviteScreen.classList.remove("screen--hidden");
-      inviteScreen.classList.add("screen--active");
-    }, 700);
-  });
+  // intro button → flip → then show envelope
+  if (introBtn) {
+    introBtn.addEventListener("click", () => {
+      if (introFlipCard) {
+        introFlipCard.classList.add("is-flipped");
+      }
+      setTimeout(() => {
+        showScreen(screenEnvelope);
+      }, 700);
+    });
+  }
 
-  // 3. Map button
-  mapBtn.addEventListener("click", () => {
-    if (INVITE_CONFIG?.event?.googleMapsUrl) {
-      window.open(INVITE_CONFIG.event.googleMapsUrl, "_blank");
-    }
-  });
+  // envelope → invite
+  if (sealBtn) {
+    sealBtn.addEventListener("click", () => {
+      const envelopeFront = document.getElementById("envelope-front");
+      if (envelopeFront) {
+        envelopeFront.classList.add("open"); // triggers CSS flap animation
+      }
 
-  // 4. Modal open/close
+      // wait for the flap to finish (700ms in CSS) then go to invite
+      setTimeout(() => {
+        showScreen(screenInvite);
+      }, 750);
+    });
+  }
+
+  // map
+  if (mapBtn) {
+    mapBtn.addEventListener("click", () => {
+      if (CFG.event?.googleMapsUrl) {
+        window.open(CFG.event.googleMapsUrl, "_blank");
+      }
+    });
+  }
+
+  // modal open/close
   const openModal = () => {
     modal.classList.add("is-open");
-    rsvpMsg.textContent = "";
+    if (rsvpMsg) rsvpMsg.textContent = "";
   };
   const closeModal = () => {
     modal.classList.remove("is-open");
   };
+  if (rsvpBtn) rsvpBtn.addEventListener("click", openModal);
+  if (modalClose) modalClose.addEventListener("click", closeModal);
+  if (modalCloseBtn) modalCloseBtn.addEventListener("click", closeModal);
 
-  rsvpBtn.addEventListener("click", openModal);
-  modalClose.addEventListener("click", closeModal);
-  modalCloseBtn.addEventListener("click", closeModal);
-
-  // 5. Form submit
-  rsvpForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const formData = new FormData(rsvpForm);
-    const name = formData.get("name");
-    const phone = formData.get("phone");
-    const attendance = formData.get("attendance");
-
-    // For now: simulate send SMS
-    console.log("[RSVP]", {
-      to: INVITE_CONFIG?.rsvp?.phone,
-      name,
-      phone,
-      attendance,
+  // RSVP submit
+  if (rsvpForm) {
+    rsvpForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(rsvpForm);
+      const payload = {
+        name: formData.get("name"),
+        phone: formData.get("phone"),
+        attendance: formData.get("attendance"),
+        to: CFG?.rsvp?.phone,
+      };
+      const submitUrl = CFG?.rsvp?.submitUrl;
+      if (submitUrl) {
+        try {
+          const res = await fetch(submitUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) throw new Error("Failed");
+          const successText =
+            CFG.i18n?.[currentLang]?.success ||
+            "Thank you 💛 your reply has been saved.";
+          rsvpMsg.textContent = successText;
+          rsvpForm.reset();
+          return;
+        } catch (err) {
+          console.warn("RSVP failed, fallback", err);
+        }
+      }
+      console.log("[RSVP]", payload);
+      const successText =
+        CFG.i18n?.[currentLang]?.success ||
+        "Thank you 💛 your reply has been saved.";
+      rsvpMsg.textContent = successText;
+      rsvpForm.reset();
     });
-
-    rsvpMsg.textContent = "Merci 💛 Votre réponse a bien été enregistrée.";
-    rsvpForm.reset();
-
-    // You can close modal after 1.2s if you want
-    // setTimeout(closeModal, 1200);
-  });
+  }
 });

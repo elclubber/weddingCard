@@ -14,89 +14,156 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- Screen 1: Envelope -->
-    <section id="screen-envelope" class="screen screen--active">
-      <div class="envelope-wrapper">
-        <div class="envelope">
-          <div class="envelope-top"></div>
-          <div class="envelope-body"></div>
-          <button id="seal-btn" class="seal-btn" aria-label="Open invitation">
-            <span class="seal-inner">💍</span>
-          </button>
+    <!-- Language switch -->
+    <div class="lang-switch" id="lang-switch">
+      <button data-lang="en" class="lang-btn lang-btn--active">EN</button>
+      <button data-lang="fr" class="lang-btn">FR</button>
+    </div>
+
+    <!-- Confetti on 1st screen -->
+    <div class="confetti" aria-hidden="true">
+      <span class="confetti-piece" style="left: 5%"></span>
+      <span class="confetti-piece" style="left: 15%"></span>
+      <span class="confetti-piece" style="left: 25%"></span>
+      <span class="confetti-piece" style="left: 40%"></span>
+      <span class="confetti-piece" style="left: 55%"></span>
+      <span class="confetti-piece" style="left: 70%"></span>
+      <span class="confetti-piece" style="left: 85%"></span>
+    </div>
+
+    <!-- Screen 0: Intro (this is the one that flips) -->
+    <section id="screen-intro" class="screen screen--active">
+      <div class="confetti confetti--intro" aria-hidden="true">
+        <span class="confetti-piece"></span>
+        <span class="confetti-piece"></span>
+        <span class="confetti-piece"></span>
+        <span class="confetti-piece"></span>
+        <span class="confetti-piece"></span>
+      </div>
+
+      <div class="screen-inner">
+        <div class="intro-flip-container" id="intro-flip">
+          <div class="intro-flip-card">
+            <!-- front of the card -->
+            <div class="intro-card intro-card--front">
+              <p class="intro-sub" data-i18n="introSub">For</p>
+              <h1 class="intro-title">Marie &amp; Pascal</h1>
+              <p class="intro-text" data-i18n="introText">
+                You are warmly invited to discover your wedding invitation.
+              </p>
+              <button id="intro-btn" class="intro-btn" data-i18n="introCta">
+                Open invitation
+              </button>
+            </div>
+            <!-- back of the card (we can show a quick “loading envelope…”) -->
+            <div class="intro-card intro-card--back">
+              <p class="intro-text-small">Preparing your envelope…</p>
+            </div>
+          </div>
         </div>
-        <p class="envelope-text">Tap to open your invitation</p>
+      </div>
+    </section>
+
+    <!-- Screen 1: Envelope -->
+    <section id="screen-envelope" class="screen screen--hidden">
+      <div class="screen-inner">
+        <div class="envelope-wrapper">
+          <div class="envelope" id="envelope-front">
+            <div class="envelope-top"></div>
+            <div class="envelope-body"></div>
+            <button id="seal-btn" class="seal-btn" aria-label="Open invitation">
+              <span class="seal-inner">💍</span>
+            </button>
+          </div>
+          <p class="envelope-text" data-i18n="tapToOpen">
+            Tap to open your invitation
+          </p>
+        </div>
       </div>
     </section>
 
     <!-- Screen 2: Invitation -->
     <section id="screen-invite" class="screen screen--hidden">
-      <div class="invite-card">
-        <div class="invite-flower-bg"></div>
-        <div class="invite-header">
-          <div class="invite-initials" id="invite-initials">K & C</div>
-        </div>
-        <div class="invite-names">
-          <div class="invite-name-main" id="invite-names-main">
-            <!-- Filled by JS -->
+      <div class="screen-inner">
+        <div class="invite-card">
+          <div class="invite-flower-bg"></div>
+          <div class="invite-flower-svg" aria-hidden="true">
+            <svg
+              viewBox="0 0 200 200"
+              xmlns="http://www.w3.org/2000/svg"
+              class="flower-svg"
+            >
+              <path
+                d="M100 20c10 15 25 23 39 23 6 0 11-1 16-3-1 5-2 10-2 15 0 15 6 29 15 39-9 1-17 5-23 11-8 8-12 19-12 32-10-6-21-8-33-8s-23 2-33 8c0-13-4-24-12-32-6-6-14-10-23-11 9-10 15-24 15-39 0-5-1-10-2-15 5 2 10 3 16 3 14 0 29-8 39-23Z"
+                fill="rgba(200,169,126,0.10)"
+              />
+            </svg>
           </div>
-          <div class="invite-name-surnames" id="invite-names-surnames">
-            <!-- Filled by JS -->
+          <div class="invite-header">
+            <div class="invite-initials" id="invite-initials">K & C</div>
+          </div>
+          <div class="invite-names">
+            <div class="invite-name-main" id="invite-names-main"></div>
+            <div class="invite-name-surnames" id="invite-names-surnames"></div>
+          </div>
+          <div class="invite-details">
+            <p class="invite-date" id="invite-date"></p>
+            <p class="invite-venue" id="invite-venue"></p>
+            <p class="invite-text" id="invite-text"></p>
           </div>
         </div>
-        <div class="invite-details">
-          <p class="invite-date" id="invite-date"></p>
-          <p class="invite-venue" id="invite-venue"></p>
-          <p class="invite-text" id="invite-text"></p>
-        </div>
-      </div>
 
-      <!-- Bottom actions -->
-      <div class="invite-actions">
-        <button
-          id="map-btn"
-          class="action-btn"
-          type="button"
-          aria-label="Open map"
-        >
-          📍
-          <span>Map</span>
-        </button>
-        <button
-          id="rsvp-btn"
-          class="action-btn action-btn--primary"
-          type="button"
-        >
-          ✉️ RSVP
-        </button>
+        <div class="invite-actions">
+          <button
+            id="map-btn"
+            class="action-btn"
+            type="button"
+            aria-label="Open map"
+          >
+            📍
+            <span data-i18n="map">Map</span>
+          </button>
+          <button
+            id="rsvp-btn"
+            class="action-btn action-btn--primary"
+            type="button"
+          >
+            ✉️ <span data-i18n="rsvp">RSVP</span>
+          </button>
+        </div>
       </div>
     </section>
 
-    <!-- Screen 3: RSVP Modal -->
+    <!-- RSVP Modal -->
     <div id="rsvp-modal" class="modal">
       <div class="modal-backdrop" id="modal-close"></div>
       <div class="modal-content">
         <button class="modal-close" id="modal-close-btn" aria-label="Close">
           ×
         </button>
-        <h2 class="modal-title">Confirm your presence</h2>
-        <p class="modal-sub">Please fill your details</p>
+        <h2 class="modal-title" data-i18n="rsvpTitle">Confirm your presence</h2>
+        <p class="modal-sub" data-i18n="rsvpSub">Please fill your details</p>
         <form id="rsvp-form" class="modal-form">
           <label class="form-field">
-            <span>Name</span>
+            <span data-i18n="labelName">Name</span>
             <input type="text" name="name" required placeholder="Your name" />
           </label>
           <label class="form-field">
-            <span>Phone / WhatsApp</span>
+            <span data-i18n="labelPhone">Phone / WhatsApp</span>
             <input type="tel" name="phone" required placeholder="+230..." />
           </label>
           <label class="form-field">
-            <span>Will you attend?</span>
+            <span data-i18n="labelAttend">Will you attend?</span>
             <select name="attendance" required>
-              <option value="yes">Yes, I will be there</option>
-              <option value="no">Sorry, I cannot</option>
+              <option value="yes" data-i18n="optYes">
+                Yes, I will be there
+              </option>
+              <option value="no" data-i18n="optNo">Sorry, I cannot</option>
             </select>
           </label>
-          <button type="submit" class="submit-btn">Send</button>
+          <button type="submit" class="submit-btn" data-i18n="btnSend">
+            Send
+          </button>
           <p id="rsvp-msg" class="form-msg"></p>
         </form>
       </div>
