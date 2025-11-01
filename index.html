@@ -14,12 +14,34 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- animated plant background -->
+    <svg
+      class="bg-vines"
+      viewBox="0 0 1200 800"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <!-- left vine -->
+      <path
+        class="vine vine--1"
+        d="M120 820 C 120 600 200 520 180 380 C 160 250 80 180 110 40"
+      />
+      <!-- right vine -->
+      <path
+        class="vine vine--2"
+        d="M1100 840 C 1080 620 1000 540 1010 420 C 1020 300 1110 230 1080 70"
+      />
+      <!-- middle leafy curve -->
+      <path
+        class="vine vine--3"
+        d="M420 840 C 430 690 520 640 560 540 C 600 440 620 320 640 180"
+      />
+    </svg>
     <!-- Language switch -->
     <div class="lang-switch" id="lang-switch">
       <button data-lang="en" class="lang-btn lang-btn--active">EN</button>
       <button data-lang="fr" class="lang-btn">FR</button>
     </div>
-
     <!-- Confetti on 1st screen -->
     <div class="confetti" aria-hidden="true">
       <span class="confetti-piece" style="left: 5%"></span>
@@ -66,6 +88,13 @@
 
     <!-- Screen 1: Envelope -->
     <section id="screen-envelope" class="screen screen--hidden">
+      <div class="confetti confetti--envelope" aria-hidden="true">
+        <span class="confetti-piece"></span>
+        <span class="confetti-piece"></span>
+        <span class="confetti-piece"></span>
+        <span class="confetti-piece"></span>
+        <span class="confetti-piece"></span>
+      </div>
       <div class="screen-inner">
         <div class="envelope-wrapper">
           <div class="envelope" id="envelope-front">
@@ -84,6 +113,27 @@
 
     <!-- Screen 2: Invitation -->
     <section id="screen-invite" class="screen screen--hidden">
+      <!-- plants background -->
+      <svg
+        class="bg-vines"
+        viewBox="0 0 1200 800"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+      >
+        <path
+          class="vine vine--1"
+          d="M120 820 C 120 600 200 520 180 380 C 160 250 80 180 110 40"
+        />
+        <path
+          class="vine vine--2"
+          d="M1100 840 C 1080 620 1000 540 1010 420 C 1020 300 1110 230 1080 70"
+        />
+        <path
+          class="vine vine--3"
+          d="M420 840 C 430 690 520 640 560 540 C 600 440 620 320 640 180"
+        />
+      </svg>
+
       <div class="screen-inner">
         <div class="invite-card">
           <div class="invite-flower-bg"></div>
